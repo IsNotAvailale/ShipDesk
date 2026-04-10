@@ -3,6 +3,7 @@ UPS Production REST API integration.
 OAuth 2.0 Client Credentials flow → label generation → PDF save.
 """
 import os
+import re
 import base64
 import logging
 from datetime import datetime
@@ -191,7 +192,3 @@ def process_all_pending(triggered_by: str) -> list:
             )
         results.append(result)
     return results
-
-
-# fix missing import
-import re
