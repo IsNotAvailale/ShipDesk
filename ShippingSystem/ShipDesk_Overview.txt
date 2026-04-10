@@ -1,0 +1,295 @@
+====================================================
+  ShipDesk — Complete System Overview
+====================================================
+
+WHAT IS SHIPDESK?
+------------------------------------------------------
+ShipDesk is a shipping management system that runs entirely
+on your office computer and opens in your web browser.
+
+It does three main things:
+  1. Reads your Gmail inbox and pulls out client shipping info
+  2. Keeps a database of all your clients and their addresses
+  3. Creates UPS shipping labels with one click
+
+Nothing is stored online. All data stays on your computer.
+No monthly fees. No subscriptions.
+
+
+====================================================
+  HOW TO START SHIPDESK
+====================================================
+
+Double-click: C:\ShippingSystem\start.bat
+
+A black window will open (do not close it — this keeps
+ShipDesk running). Your browser will open automatically.
+
+To stop ShipDesk, close the black window.
+
+
+====================================================
+  LOGGING IN
+====================================================
+
+When ShipDesk opens, you will see a login screen.
+
+There are two types of accounts:
+
+  EMPLOYEE — Can view clients, add clients, view
+             pending shipments, and check emails manually.
+
+  ADMIN    — Can do everything an employee can, PLUS:
+             process and send shipments, update UPS
+             settings, manage user accounts, and view logs.
+
+The default admin account is:
+  Username: admin
+  Password: admin123
+  (Change this immediately in Settings!)
+
+
+====================================================
+  PAGE BY PAGE GUIDE
+====================================================
+
+------------------------------------------------------
+1. DASHBOARD (Home Screen)
+------------------------------------------------------
+The first page you see after logging in.
+
+Shows you at a glance:
+  - Total number of clients in the system
+  - How many shipments are waiting to be processed
+  - How many shipments were sent today
+
+Also shows a preview list of pending shipments.
+
+Button: "Check Emails Now"
+  Manually tells ShipDesk to go read your Gmail inbox
+  right now and look for new shipping requests.
+  (ShipDesk also does this automatically every 30 minutes.)
+
+
+------------------------------------------------------
+2. CLIENTS (Client Database)
+------------------------------------------------------
+A searchable list of every client the company has ever
+shipped to.
+
+What you can do here:
+  - Search by name, company, city, or email
+  - Add a new client manually using the "Add Client" button
+  - Edit an existing client's information
+  - Click the truck icon to add a client to the shipment queue
+
+Each client record stores:
+  Name, Company, Street Address, City, State, ZIP,
+  Email, Phone Number, and the date they were added.
+
+
+------------------------------------------------------
+3. SHIPMENTS (Shipment Queue)
+------------------------------------------------------
+Shows all shipments that are pending — ready to be
+processed and sent to UPS.
+
+EMPLOYEE view:
+  Can see the list but cannot process shipments.
+  A message will tell them to contact an admin.
+
+ADMIN view:
+  Sees the full list plus a button:
+  "Confirm & Process All (X)"
+
+  When the admin clicks that button:
+    - A confirmation message appears to double-check
+    - ShipDesk contacts UPS for every pending shipment
+    - UPS labels are generated as PDF files
+    - Labels are saved automatically to C:\ShippingSystem\labels\
+    - Tracking numbers are saved to the database
+    - Shipments move from "Pending" to "Completed"
+
+  YOU WILL BE CHARGED BY UPS when you click this button.
+  Always review the list carefully before confirming.
+
+History button:
+  Shows all past shipments (completed and pending),
+  their tracking numbers, and a download button for
+  each PDF label.
+
+
+------------------------------------------------------
+4. SETTINGS (Admin Only)
+------------------------------------------------------
+Only admins can see this page.
+
+Divided into three sections:
+
+  UPS API CREDENTIALS
+    Where you enter your UPS account information:
+    - UPS Client ID (from UPS Developer Portal)
+    - UPS Client Secret (from UPS Developer Portal)
+    - UPS Account Number
+    - Your company's name and shipping address
+      (this appears as the "From" address on every label)
+
+    Click "Save UPS Settings" to save. Credentials are
+    stored encrypted on your computer — never sent anywhere
+    except directly to UPS when processing shipments.
+
+  GMAIL SETUP
+    Instructions for connecting your Gmail account.
+    You place a file called gmail_credentials.json in the
+    credentials folder, then authorize access the first time
+    you click "Check Emails Now."
+
+  USER ACCOUNTS
+    - See all current users and their roles
+    - Add new employees or admins
+    - Change anyone's password
+    - Delete users who no longer work there
+
+
+------------------------------------------------------
+5. LOGS (Admin Only)
+------------------------------------------------------
+A full history of everything that has happened in ShipDesk:
+
+  - Every login and logout
+  - Every client added (manually or by email agent)
+  - Every shipment processed or failed
+  - Every email flagged for review
+  - Every settings change
+
+You can search the logs by keyword (name, action, date, etc.)
+
+Color coding:
+  Green  = Success (client added, shipment processed)
+  Yellow = Needs attention (email flagged for review)
+  Red    = Something failed
+
+
+====================================================
+  THE EMAIL AGENT
+====================================================
+
+ShipDesk automatically reads your Gmail inbox every
+30 minutes looking for emails that contain shipping info.
+
+HOW IT WORKS:
+  1. Finds unread emails in your inbox
+  2. Reads the email and tries to extract:
+       Name, Address, City, State, ZIP, Email, Phone
+  3. If it finds a complete address → adds the client
+     to the database automatically
+  4. If information is missing or unclear → flags the
+     email in the Logs for an admin to review manually
+  5. Marks the email as "read" — never deletes anything
+
+The email can be written in any format — freeform,
+bullet points, labeled fields, doesn't matter.
+ShipDesk is smart enough to find the address regardless.
+
+MANUAL TRIGGER:
+  Click "Check Emails Now" on the Dashboard to run the
+  email agent immediately without waiting 30 minutes.
+
+FLAGGED EMAILS:
+  Go to Logs and search "Flagged" to see any emails where
+  ShipDesk wasn't sure about the address. You can then
+  add those clients manually using the Add Client form.
+
+
+====================================================
+  UPS LABEL DETAILS
+====================================================
+
+Every label ShipDesk generates uses these settings:
+
+  Service:      UPS Next Day Air
+  Package Type: My Packaging (your own box)
+  Dimensions:   14 inches long
+                10 inches wide
+                 1 inch tall
+  Weight:       1 pound
+
+Labels are saved as PDF files here:
+  C:\ShippingSystem\labels\
+
+Each file is named:
+  YYYY-MM-DD_ClientName_TrackingNumber.pdf
+
+You can also download any label from the Shipment
+History page by clicking the "PDF" button.
+
+
+====================================================
+  SECURITY
+====================================================
+
+  - All data is stored only on this computer
+  - Passwords are encrypted (never stored as plain text)
+  - UPS credentials are encrypted in a local file
+  - Sessions automatically expire after 15 minutes of
+    inactivity — you will be logged out automatically
+  - Employees cannot access Settings or Logs
+  - No data is ever sent anywhere except:
+      UPS API (when processing shipments)
+      Gmail API (when reading emails)
+
+
+====================================================
+  IMPORTANT FILE LOCATIONS
+====================================================
+
+  Program folder:    C:\ShippingSystem\
+  Start shortcut:    C:\ShippingSystem\start.bat
+  Client database:   C:\ShippingSystem\shipping.db
+  UPS labels (PDF):  C:\ShippingSystem\labels\
+  Credentials:       C:\ShippingSystem\credentials\
+  This document:     C:\ShippingSystem\ShipDesk_Overview.txt
+  Setup guide:       C:\ShippingSystem\setup_guide.txt
+  Admin guide:       C:\ShippingSystem\admin_guide.txt
+
+
+====================================================
+  BACKUP
+====================================================
+
+To back up everything, copy the entire folder:
+  C:\ShippingSystem\
+
+to a USB drive or external hard drive.
+
+The most important file is shipping.db —
+it contains all your clients and shipment history.
+
+
+====================================================
+  QUICK REFERENCE — DAILY USE
+====================================================
+
+MORNING ROUTINE (Employee):
+  1. Double-click start.bat
+  2. Log in
+  3. Click "Check Emails Now" to catch overnight emails
+  4. Review Dashboard for any pending shipments
+
+PROCESSING SHIPMENTS (Admin):
+  1. Go to Shipments page
+  2. Review the list carefully
+  3. Click "Confirm & Process All"
+  4. Labels are saved automatically to the labels folder
+
+ADDING A CLIENT MANUALLY:
+  1. Go to Clients
+  2. Click "Add Client"
+  3. Fill in their info and click Save
+  4. Click the truck icon next to their name to queue a shipment
+
+REVIEWING FLAGGED EMAILS:
+  1. Go to Logs
+  2. Search "Flagged"
+  3. Read the details to see what was extracted
+  4. Go to Clients → Add Client to enter them manually
