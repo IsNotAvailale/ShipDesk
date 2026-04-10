@@ -93,7 +93,7 @@
 {% if session.get('user') %}
 <script>
   // Session timeout countdown — warn 2 minutes before expiry
-  const TIMEOUT_SECS = {{ config.SESSION_TIMEOUT if config is defined else 900 }};
+  const TIMEOUT_SECS = {{ SESSION_TIMEOUT }};
   const WARN_BEFORE  = 120; // seconds before expiry to show banner
 
   let remaining = TIMEOUT_SECS;
