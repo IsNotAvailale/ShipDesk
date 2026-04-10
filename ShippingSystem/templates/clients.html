@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Clients — ShipDesk{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold mb-0"><i class="bi bi-people me-2"></i>Client Database</h1>
+  <a href="{{ url_for('clients.add_client') }}" class="btn btn-dark btn-lg">
+    <i class="bi bi-person-plus me-2"></i>Add Client
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-3">
+    <form class="d-flex gap-2" method="GET">
+      <input type="search" name="search" class="form-control form-control-lg"
+             placeholder="Search by name, company, city, or email..."
+             value="{{ search }}">
+      <button type="submit" class="btn btn-dark btn-lg px-4">
+        <i class="bi bi-search"></i>
+      </button>
+      {% if search %}
+      <a href="{{ url_for('clients.clients') }}" class="btn btn-outline-secondary btn-lg">Clear</a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white py-3">
+    <span class="fs-5 text-muted">{{ clients|length }} client{{ 's' if clients|length != 1 }}</span>
+  </div>
+  <div class="card-body p-0">
+    {% if clients %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 fs-5">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">Name</th>
+            <th>Company</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Added</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in clients %}
+          <tr>
+            <td class="ps-4 fw-semibold">{{ c.name }}</td>
+            <td>{{ c.company or '—' }}</td>
+            <td>
+              {% if c.address %}
+                {{ c.address }}<br>
+                <small class="text-muted">{{ c.city }}, {{ c.state }} {{ c.zip }}</small>
+              {% else %}—{% endif %}
+            </td>
+            <td>{{ c.email or '—' }}</td>
+            <td>{{ c.phone or '—' }}</td>
+            <td><small class="text-muted">{{ c.date_added[:10] }}</small></td>
+            <td class="pe-3">
+              <div class="d-flex gap-2 justify-content-end">
+                <a href="{{ url_for('clients.edit_client', client_id=c.id) }}"
+                   class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <form method="POST" action="{{ url_for('clients.request_shipment', client_id=c.id) }}">
+                  <button type="submit" class="btn btn-sm btn-dark"
+                          title="Add to shipment queue">
+                    <i class="bi bi-truck"></i> Ship
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-people display-4"></i>
+      <p class="mt-3 fs-5">No clients found.
+        {% if search %}<a href="{{ url_for('clients.clients') }}">Clear search</a>{% else %}
+        <a href="{{ url_for('clients.add_client') }}">Add your first client.</a>{% endif %}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

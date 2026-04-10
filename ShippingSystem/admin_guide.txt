@@ -1,0 +1,97 @@
+====================================================
+  ShipDesk Admin Guide
+====================================================
+
+ADMIN vs EMPLOYEE ACCESS
+------------------------------------------------------
+Admins can do everything employees can, plus:
+- Process and confirm shipment batches (generate UPS labels)
+- Update UPS API credentials
+- Add, remove, and manage user accounts
+- Change passwords for any user
+- View the full activity log
+
+
+MANAGING USER ACCOUNTS
+------------------------------------------------------
+Go to Settings → User Accounts
+
+ADD A NEW USER:
+1. Enter a username and password in the "Add User" section
+2. Choose their role: Employee or Admin
+3. Click "Add User"
+4. Tell the new employee their username and password
+
+CHANGE SOMEONE'S PASSWORD:
+1. In the "Change Password" section, pick the username from the dropdown
+2. Enter the new password
+3. Click "Update Password"
+
+DELETE A USER:
+1. Find the user in the Users table
+2. Click the red trash icon next to their name
+3. Confirm the deletion
+Note: You cannot delete your own account.
+
+
+PROCESSING SHIPMENTS
+------------------------------------------------------
+1. Click "Shipments" in the top menu
+2. Review the list of pending shipments
+3. When ready to ship, click "Confirm & Process All"
+4. A confirmation dialog will appear — read it carefully before clicking OK
+5. ShipDesk contacts UPS and generates a PDF label for each shipment
+6. Labels are automatically saved to: C:\ShippingSystem\labels\
+7. To download a label, go to Shipments → History and click "PDF"
+
+
+REVIEWING FLAGGED EMAILS
+------------------------------------------------------
+When the email agent can't fully parse a client's address from an email,
+it flags it for review instead of guessing.
+
+To review flagged emails:
+1. Click "Logs" in the top menu
+2. Search for "Flagged"
+3. Each flagged entry shows what was extracted from the email
+4. Manually add the client using "Add Client" in the Clients page
+
+
+UPDATING UPS CREDENTIALS
+------------------------------------------------------
+If you get a new UPS account or your credentials change:
+1. Go to Settings → UPS API Credentials
+2. Enter the new Client ID, Client Secret, and Account Number
+3. Click "Save UPS Settings"
+Credentials are stored encrypted on this computer — they are never sent anywhere
+except directly to UPS when processing shipments.
+
+
+UPDATING GMAIL CREDENTIALS
+------------------------------------------------------
+If you need to connect a different Gmail account:
+1. Delete the file: C:\ShippingSystem\credentials\gmail_token.json
+2. Place the new gmail_credentials.json file in: C:\ShippingSystem\credentials\
+3. Click "Check Emails Now" on the Dashboard
+4. Follow the Google sign-in prompt for the new account
+
+
+WHERE ARE MY FILES?
+------------------------------------------------------
+Labels (PDF):      C:\ShippingSystem\labels\
+Database:          C:\ShippingSystem\shipping.db
+Logs (in-app):     Settings → Logs page
+Credentials:       C:\ShippingSystem\credentials\ (encrypted)
+
+
+BACKUP RECOMMENDATION
+------------------------------------------------------
+To back up all your data, copy the entire C:\ShippingSystem\ folder
+to an external drive or USB stick regularly.
+The most important file is: shipping.db (contains all clients and shipment history)
+
+
+SHUTTING DOWN SHIPDESK
+------------------------------------------------------
+Simply close the black command window that opened when you ran start.bat.
+ShipDesk will shut down cleanly.

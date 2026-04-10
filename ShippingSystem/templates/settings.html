@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Settings — ShipDesk{% endblock %}
+{% block content %}
+
+<h1 class="fw-bold mb-4"><i class="bi bi-gear me-2"></i>Settings</h1>
+
+<!-- UPS Credentials -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white py-3">
+    <h4 class="mb-0 fw-bold"><i class="bi bi-boxes me-2"></i>UPS API Credentials</h4>
+  </div>
+  <div class="card-body p-4">
+    <form method="POST">
+      <input type="hidden" name="action" value="ups">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fs-5 fw-semibold">UPS Client ID</label>
+          <input type="text" name="ups_client_id" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('client_id','') }}" placeholder="Your UPS OAuth2 Client ID" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fs-5 fw-semibold">UPS Client Secret</label>
+          <input type="password" name="ups_client_secret" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('client_secret','') }}" placeholder="Your UPS OAuth2 Client Secret" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fs-5 fw-semibold">UPS Account Number</label>
+          <input type="text" name="ups_account_number" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('account_number','') }}" required>
+        </div>
+        <div class="col-12 mt-2">
+          <h6 class="text-muted text-uppercase fw-bold">Your Shipper Information</h6>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fs-5 fw-semibold">Company / Shipper Name</label>
+          <input type="text" name="shipper_name" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('shipper_name','') }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fs-5 fw-semibold">Street Address</label>
+          <input type="text" name="shipper_address" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('shipper_address','') }}">
+        </div>
+        <div class="col-md-5">
+          <label class="form-label fs-5 fw-semibold">City</label>
+          <input type="text" name="shipper_city" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('shipper_city','') }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fs-5 fw-semibold">State</label>
+          <input type="text" name="shipper_state" class="form-control form-control-lg"
+                 maxlength="2" value="{{ ups_creds.get('shipper_state','') }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fs-5 fw-semibold">ZIP Code</label>
+          <input type="text" name="shipper_zip" class="form-control form-control-lg"
+                 value="{{ ups_creds.get('shipper_zip','') }}">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-dark btn-lg mt-3 fw-bold">
+        <i class="bi bi-save me-2"></i>Save UPS Settings
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Gmail setup info -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white py-3">
+    <h4 class="mb-0 fw-bold"><i class="bi bi-envelope me-2"></i>Gmail Setup</h4>
+  </div>
+  <div class="card-body p-4">
+    <p class="fs-5">To connect Gmail, place your <strong>gmail_credentials.json</strong> file
+    (downloaded from Google Cloud Console) into:</p>
+    <code class="fs-5 d-block p-3 bg-light rounded mb-3">C:\ShippingSystem\credentials\gmail_credentials.json</code>
+    <p class="fs-5 text-muted">The first time you click <strong>Check Emails Now</strong> on the dashboard,
+    a browser window will open asking you to authorize Gmail access. After that it runs automatically.</p>
+  </div>
+</div>
+
+<!-- User Management -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white py-3">
+    <h4 class="mb-0 fw-bold"><i class="bi bi-people me-2"></i>User Accounts</h4>
+  </div>
+  <div class="card-body p-4">
+    <table class="table fs-5 mb-4">
+      <thead class="table-light">
+        <tr><th>Username</th><th>Role</th><th>Created</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="fw-semibold">{{ u.username }}</td>
+          <td>
+            {% if u.role == 'admin' %}
+              <span class="badge bg-warning text-dark">Admin</span>
+            {% else %}
+              <span class="badge bg-secondary">Employee</span>
+            {% endif %}
+          </td>
+          <td><small>{{ u.created_at[:10] }}</small></td>
+          <td>
+            {% if u.username != user %}
+            <form method="POST" class="d-inline"
+                  onsubmit="return confirm('Delete user {{ u.username }}?')">
+              <input type="hidden" name="action" value="delete_user">
+              <input type="hidden" name="del_username" value="{{ u.username }}">
+              <button class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="row g-4">
+      <!-- Add user -->
+      <div class="col-md-6">
+        <h5 class="fw-bold">Add User</h5>
+        <form method="POST">
+          <input type="hidden" name="action" value="add_user">
+          <div class="mb-2">
+            <input type="text" name="new_username" class="form-control form-control-lg"
+                   placeholder="Username" required>
+          </div>
+          <div class="mb-2">
+            <input type="password" name="new_password" class="form-control form-control-lg"
+                   placeholder="Password" required>
+          </div>
+          <div class="mb-3">
+            <select name="new_role" class="form-select form-select-lg">
+              <option value="employee">Employee</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-dark btn-lg fw-bold">
+            <i class="bi bi-person-plus me-1"></i>Add User
+          </button>
+        </form>
+      </div>
+
+      <!-- Change password -->
+      <div class="col-md-6">
+        <h5 class="fw-bold">Change Password</h5>
+        <form method="POST">
+          <input type="hidden" name="action" value="change_password">
+          <div class="mb-2">
+            <select name="target_username" class="form-select form-select-lg">
+              {% for u in users %}
+                <option value="{{ u.username }}">{{ u.username }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <input type="password" name="new_pw" class="form-control form-control-lg"
+                   placeholder="New Password" required>
+          </div>
+          <button type="submit" class="btn btn-outline-dark btn-lg fw-bold">
+            <i class="bi bi-key me-1"></i>Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

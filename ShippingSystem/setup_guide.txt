@@ -1,0 +1,106 @@
+====================================================
+  ShipDesk Setup Guide
+  Plain English — No Technical Experience Needed
+====================================================
+
+WHAT IS SHIPDESK?
+ShipDesk is a program that runs on your computer and opens in your web browser.
+It helps you manage client shipping information, read emails, and print UPS labels.
+Nothing is stored online — everything stays on this computer.
+
+
+STEP 1 — INSTALL PYTHON
+------------------------------------------------------
+Python is a free program that ShipDesk needs to run.
+
+1. Open your web browser and go to: https://www.python.org/downloads/
+2. Click the big yellow "Download Python" button
+3. Run the installer you just downloaded
+4. IMPORTANT: On the first screen, check the box that says
+   "Add Python to PATH" before clicking Install Now
+5. Click "Install Now" and wait for it to finish
+6. Click "Close" when done
+
+
+STEP 2 — SET UP GMAIL ACCESS (for reading shipping emails)
+------------------------------------------------------
+This lets ShipDesk read your company Gmail inbox.
+You only need to do this once.
+
+1. Go to https://console.cloud.google.com/ and sign in with
+   your company Google account
+2. Click "Create Project", give it any name (e.g. "ShipDesk"), click Create
+3. In the search bar at the top, type "Gmail API" and press Enter
+4. Click "Gmail API" in the results, then click "Enable"
+5. Click "OAuth consent screen" on the left side
+   - Choose "Internal" if available, or "External"
+   - Fill in App Name: ShipDesk, and your email address
+   - Click Save and Continue through the rest
+6. Click "Credentials" on the left side
+7. Click "+ Create Credentials" at the top → choose "OAuth client ID"
+8. For Application type, choose "Desktop app"
+9. Click Create, then click "Download JSON"
+10. Rename the downloaded file to: gmail_credentials.json
+11. Move it to: C:\ShippingSystem\credentials\gmail_credentials.json
+
+
+STEP 3 — SET UP UPS API (for generating shipping labels)
+------------------------------------------------------
+1. Go to https://developer.ups.com/ and create a free account
+2. Log in, go to "My Apps" and create a new app
+3. Select "I want to integrate UPS technology into my business"
+4. After creating the app, you will see a Client ID and Client Secret
+5. Write these down — you will enter them in ShipDesk Settings later
+6. Also note your UPS Account Number (6 characters, found in UPS.com account)
+
+
+STEP 4 — START SHIPDESK
+------------------------------------------------------
+1. Open the folder: C:\ShippingSystem\
+2. Double-click the file: start.bat
+3. A black window will open — this is normal, do not close it
+4. Your web browser will open automatically to the ShipDesk login page
+5. The first time it runs, it installs some required files (takes 1-2 minutes)
+
+Default login:
+  Username: admin
+  Password: admin123
+
+IMPORTANT: Change this password right away in Settings!
+
+
+STEP 5 — ENTER YOUR UPS CREDENTIALS
+------------------------------------------------------
+1. Log in to ShipDesk
+2. Click "Settings" in the top menu
+3. Under "UPS API Credentials", enter:
+   - Your UPS Client ID
+   - Your UPS Client Secret
+   - Your UPS Account Number
+   - Your company's name and address (this is the "from" address on labels)
+4. Click "Save UPS Settings"
+
+
+STEP 6 — CONNECT GMAIL
+------------------------------------------------------
+1. Make sure you completed Step 2 above
+2. Click "Check Emails Now" on the Dashboard
+3. A browser window will open asking you to sign in to Google
+4. Sign in with your company Gmail account
+5. Click "Allow" to give ShipDesk permission to read emails
+6. The window will close and ShipDesk will check for new emails
+
+
+YOU'RE ALL SET!
+------------------------------------------------------
+ShipDesk will now:
+- Check your Gmail every 30 minutes automatically
+- Add shipping clients it finds in emails
+- Let you review and approve shipments before anything is sent to UPS
+
+To start ShipDesk each day, just double-click: C:\ShippingSystem\start.bat
+
+
+NEED HELP?
+------------------------------------------------------
+Contact your system administrator or the person who set up ShipDesk.

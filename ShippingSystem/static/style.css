@@ -1,0 +1,56 @@
+/* ShipDesk — global style overrides */
+
+body {
+  font-size: 1.05rem;
+  background-color: #f8f9fa;
+}
+
+/* Larger base font for non-technical users */
+.table {
+  font-size: 1.05rem;
+}
+
+.form-control, .form-select {
+  font-size: 1.1rem;
+}
+
+/* Nav */
+.navbar-brand {
+  letter-spacing: 0.03em;
+}
+
+.nav-link {
+  font-size: 1.05rem;
+  padding: 0.6rem 1rem !important;
+}
+
+/* Cards */
+.card {
+  border-radius: 0.75rem;
+}
+
+.card-header {
+  border-bottom: 1px solid #e9ecef;
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+/* Buttons */
+.btn-lg {
+  font-size: 1.05rem;
+  padding: 0.6rem 1.4rem;
+}
+
+/* Table rows */
+.table > tbody > tr > td {
+  vertical-align: middle;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+/* Timeout banner */
+#timeout-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  border-radius: 0 !important;
+}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Shipment Queue — ShipDesk{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold mb-0"><i class="bi bi-truck me-2"></i>Shipment Queue</h1>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('shipments.history') }}" class="btn btn-outline-secondary btn-lg">
+      <i class="bi bi-clock-history me-1"></i>History
+    </a>
+    {% if role == 'admin' and shipments %}
+    <form method="POST" action="{{ url_for('shipments.process_shipments') }}"
+          onsubmit="return confirm('Process all {{ shipments|length }} pending shipment(s) and generate UPS labels?\n\nThis will charge your UPS account.')">
+      <button type="submit" class="btn btn-dark btn-lg fw-bold">
+        <i class="bi bi-send me-2"></i>Confirm &amp; Process All ({{ shipments|length }})
+      </button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    {% if shipments %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 fs-5">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">#</th>
+            <th>Client</th>
+            <th>Company</th>
+            <th>Ship To</th>
+            <th>Requested</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in shipments %}
+          <tr>
+            <td class="ps-4 text-muted"><small>{{ s.id }}</small></td>
+            <td class="fw-semibold">{{ s.name }}</td>
+            <td>{{ s.company or '—' }}</td>
+            <td>
+              {{ s.address }}<br>
+              <small class="text-muted">{{ s.city }}, {{ s.state }} {{ s.zip }}</small>
+            </td>
+            <td><small>{{ s.date_requested[:10] }}</small></td>
+            <td>
+              <span class="badge bg-warning text-dark fs-6">Pending</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if role != 'admin' %}
+    <div class="alert alert-info m-3">
+      <i class="bi bi-info-circle me-1"></i>
+      An admin must confirm and process shipments. Contact your administrator.
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-truck display-4"></i>
+      <p class="mt-3 fs-5">No pending shipments.</p>
+      <a href="{{ url_for('clients.clients') }}" class="btn btn-outline-dark">
+        <i class="bi bi-truck me-1"></i>Add a Shipment from Client List
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

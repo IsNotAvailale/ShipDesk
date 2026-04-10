@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Shipping System{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+
+{% if session.get('user') %}
+<!-- Session timeout warning -->
+<div id="timeout-banner" class="alert alert-warning alert-dismissible d-none m-0 rounded-0 text-center fw-bold" role="alert">
+  <i class="bi bi-clock-history"></i> Your session will expire in <span id="countdown">2:00</span>.
+  <a href="{{ url_for('auth.logout') }}" class="alert-link">Log out</a> or keep working to stay signed in.
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <a class="navbar-brand fw-bold fs-4" href="{{ url_for('dashboard.dashboard') }}">
+    <i class="bi bi-box-seam me-2"></i>ShipDesk
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navMenu">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'dashboard.dashboard' %}active{% endif %}"
+           href="{{ url_for('dashboard.dashboard') }}">
+          <i class="bi bi-speedometer2 me-1"></i>Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if 'clients' in request.endpoint %}active{% endif %}"
+           href="{{ url_for('clients.clients') }}">
+          <i class="bi bi-people me-1"></i>Clients
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if 'shipments' in request.endpoint %}active{% endif %}"
+           href="{{ url_for('shipments.shipments') }}">
+          <i class="bi bi-truck me-1"></i>Shipments
+        </a>
+      </li>
+      {% if role == 'admin' %}
+      <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'settings.settings' %}active{% endif %}"
+           href="{{ url_for('settings.settings') }}">
+          <i class="bi bi-gear me-1"></i>Settings
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'logs.logs' %}active{% endif %}"
+           href="{{ url_for('logs.logs') }}">
+          <i class="bi bi-journal-text me-1"></i>Logs
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+          <i class="bi bi-person-circle me-1"></i>{{ user }}
+          {% if role == 'admin' %}<span class="badge bg-warning text-dark ms-1">Admin</span>{% endif %}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+            <i class="bi bi-box-arrow-right me-1"></i>Log Out
+          </a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endif %}
+
+<div class="container-fluid py-4 px-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% if session.get('user') %}
+<script>
+  // Session timeout countdown — warn 2 minutes before expiry
+  const TIMEOUT_SECS = {{ config.SESSION_TIMEOUT if config is defined else 900 }};
+  const WARN_BEFORE  = 120; // seconds before expiry to show banner
+
+  let remaining = TIMEOUT_SECS;
+  const banner   = document.getElementById('timeout-banner');
+  const countEl  = document.getElementById('countdown');
+
+  // Reset on any user interaction
+  ['mousemove','keydown','click','scroll'].forEach(evt =>
+    document.addEventListener(evt, () => { remaining = TIMEOUT_SECS; }, { passive: true })
+  );
+
+  setInterval(() => {
+    remaining--;
+    if (remaining <= WARN_BEFORE) {
+      banner.classList.remove('d-none');
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      countEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    } else {
+      banner.classList.add('d-none');
+    }
+    if (remaining <= 0) {
+      window.location.href = "{{ url_for('auth.logout') }}";
+    }
+  }, 1000);
+</script>
+{% endif %}
+</body>
+</html>
